@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Update Vehicle</h2>
+    <form id="updateVehicleForm">
+        <label for="vehicle_number">Vehicle Number:</label>
+        <input type="text" id="vehicle_number" name="vehicle_number" required>
+
+        <label for="vehicle_type">Vehicle Type:</label>
+        <select id="vehicle_type" name="vehicle_type" required>
+            <option value="car">Car</option>
+            <option value="bike">Bike</option>
+            <option value="truck">Truck</option>
+        </select>
+
+        <button type="submit">Update Vehicle</button>
+    </form>
+
+    <script>
+        // Fetch vehicle details on page load
+        async function fetchVehicleDetails() {
+            const vehicleId = window.location.pathname.split('/')[2];
+            const response = await fetch(`/api/vehicles/${vehicleId}/`);
+            const data = await response.json();
+
+            document.getElementById('vehicle_number').value = data.vehicle_number;
+            document.getElementById('vehicle_type').value = data.vehicle_type;
+        }
+
+        // Handle form submission
+        document.getElementById('updateVehicleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const vehicleId = window.location.pathname.split('/')[2];
+            const formData = {
+                vehicle_number: document.getElementById('vehicle_number').value,
+                vehicle_type: document.getElementById('vehicle_type').value,
+            };
+
+            const response = await fetch(`/api/vehicles/${vehicleId}/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                alert('Vehicle updated successfully!');
+                window.location.href = '/'; // Redirect to home page
+            } else {
+                alert('Error updating vehicle.');
+            }
+        });
+
+        // Load vehicle details on page load
+        document.addEventListener('DOMContentLoaded', fetchVehicleDetails);
+    </script>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Add Vehicle</h2>
+    <form id="addVehicleForm">
+        <label for="vehicle_number">Vehicle Number:</label>
+        <input type="text" id="vehicle_number" name="vehicle_number" required>
+
+        <label for="vehicle_type">Vehicle Type:</label>
+        <select id="vehicle_type" name="vehicle_type" required>
+            <option value="car">Car</option>
+            <option value="bike">Bike</option>
+            <option value="truck">Truck</option>
+        </select>
+
+        <button type="submit">Add Vehicle</button>
+    </form>
+
+    <script>
+        // Handle form submission
+        document.getElementById('addVehicleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = {
+                vehicle_number: document.getElementById('vehicle_number').value,
+                vehicle_type: document.getElementById('vehicle_type').value,
+            };
+
+            const response = await fetch('/api/vehicles/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                alert('Vehicle added successfully!');
+                window.location.href = '/'; // Redirect to home page
+            } else {
+                alert('Error adding vehicle.');
+            }
+        });
+    </script>
+{% endblock %}
